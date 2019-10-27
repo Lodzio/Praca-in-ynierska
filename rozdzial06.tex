@@ -1,1 +1,13 @@
 \chapter{Przykłady działania}
+W trakcie prac został podłączony po mqtt sterownik przekaźnikowy który sterował lampką i czujnik temperatury DS18B20 do platformy i działała ona na urządzeniu Raspberry Pi i na laptopie. Płytka Raspberry została wykorzystana z kilku względów. 
+\begin{itemize}
+    \item Małe rozmiary dzięki którym łatwiej nam znaleść dedykowane stałe miejsce.
+    \item Małe zapotrzebowanie na energie które ma bardzo duży wpływ w przypadku gdy urządzeni działą 24 godziny na dobę.
+    \item Mała cena która wynosi ok 200 zł za wersje 3B+.
+\end{itemize}
+Oczywiście to urządzenie ma dwie spore wady.
+\begin{itemize}
+    \item Mała stabilność która jest efektem tego że system działa na karcie SD.
+    \item Do tego urządzenia musimy sami dostarczyć zasilanie 5V o minimalnym natężeniu 2A. Często z winy Słabej jakości kabla albo zasilacza awaryjność powoduje że musimy restartować urządzenie raz na miesiąc czy nawe na tydzień.
+\end{itemize}
+Wady i zalety pokazują że jest to świetna konfiguracja prototypownia ,lecz nie do długoterminowej instalacji. 

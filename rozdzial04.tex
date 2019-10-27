@@ -1,5 +1,11 @@
 \chapter{Analiza technologiczna}
+\section{Wstęp}
+Jako że chciałem by jak największe grono odbiorców było w stanie tworzyć dodatkowe moduły do sterowania, zadecydowałem że wykorzystam najpopularniejsze technologie. Należy by też zadbać o jakość kodu i trzymanie się ustalonych zasad. Ma to długoterminowe korzyści w postaci mniejszej ilości błędów, łatwości ich naprawiania jak i szybsze wdrażanie nowych osób w ten projekt.
 \section{Zastosowane technologie}
-Strona internetowa pisana w React TypeScript. Serwer jak i baza danych to jeszcze temat otwarty ale możliwe że będzie to nodejs i SQLite. System będzie działać na Raspberry Pi(Raspbian) ponieważ dla tego typu systemów jest to najpopularniejsze urządzenie.
-Jeśli chodzi o sposoby sterowania przez system to na pewno obsługa GPIO, 1-wire, UART w systemie Raspbian. Jeszcze się zastanawiam nad możliwością podłączenia urządzeń zdalnych dla technologi IoT.
-
+Aktualnie jednym z najpopularniejszych języków jest JavaScript w nowych odsłonach ES6+. Jest to język skryptowy więc na równych systemach i architekturach powinien działać tak samo. Najwiekszą wadą tego języka jest dynamiczne typowanie przez co kod potrafi być mało precyzyjny. W tym celu zdecydowałem się na nakładkę Typescript która wprowadza interface'y znane m.in z języka Java. Dodatkowo strona internetowa powinna być napisana w jednym z popularniejszych frameworków by oszczędzić czas i usprawnić prace nad projektem. Na rynku dominują teraz 3 biblioteki: React, Angular i Vue. Wybór padł na Reacta ze względu na duże wsparcie community i wsparciem składni JSX. \\
+Jednym z ważniejszych aspektów platformy jest responsywność dlatego zamiast klasycznych zapytań http dobrym wyborm wydaje się WebSocket. 
+\section{Higiena projektu}
+Kod powinien być napisany według aktualnych praktyk by był on możliwie najbardziej czytelny. Wpływa to na zmniejszoną ilość błędów, łatwiejsze rozwijanie i szybsze naprawy. Powinien być napisany w taki sposób by nowe osoby nie miały problemu ze zrozumieniem. \\
+Kolejnym aspektem jest modularność. Wynika ona z kultury pisania kodu, ale tutaj jest ona szczególnie ważna ponieważ zakładamy że będziemy stale dodawać obsługi nowych urzadzeń. 
+% Strona internetowa pisana w React TypeScript. Serwer jak i baza danych to jeszcze temat otwarty ale możliwe że będzie to nodejs i SQLite. System będzie działać na Raspberry Pi(Raspbian) ponieważ dla tego typu systemów jest to najpopularniejsze urządzenie.
+% Jeśli chodzi o sposoby sterowania przez system to na pewno obsługa GPIO, 1-wire, UART w systemie Raspbian. Jeszcze się zastanawiam nad możliwością podłączenia urządzeń zdalnych dla technologi IoT.
