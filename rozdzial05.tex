@@ -5,5 +5,11 @@ Aplikacja posiada 2 strony.
 \subsection{Dashboard}
 Widzimy tutaj wszystkie zapisane urządzenia w postaci kafelek. Wyświetlane są tylko najważniejsze informacje czyli typ urządzenia(Przycisk, czujnik itp.), nazwa i stan. W przypadku przycisku mamy także możliwość klikania. 
 \subsection{Settings}
+Strona służy do konfiguracji naszego systemu. Mamy tu możliwość dodania nowych urządzeń, edycji już istniejących lub wglądu do szczegółów takich jak logi urządzeń.
 \section{Serwer}
-Jest on pośrednikiem między poleceniami użytkownika, a urządzeniami. Jednocześnie zapisuje aktualną konfigurację w bazie danych i trzyma logi
+Jest on pośrednikiem między poleceniami użytkownika, a urządzeniami. Jednocześnie zapisuje aktualną konfigurację w bazie danych i trzyma logi. Jest on podzielony na komponenty:
+\begin{itemize}
+    \item http
+    \item baza danych
+    \item API do urządzeń
+\end{itemize}
