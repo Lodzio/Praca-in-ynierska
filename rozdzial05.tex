@@ -2,7 +2,51 @@
 Projekt jest podzielony na 2 części: aplikacje internetową i serwer
 \section{Aplikacja internetowa}
 Przy pomocy strony użytkownik monitoruje i steruje wszystkimi podłączonymi urządzeniami w budynku. Może także zobaczyć informacje pochodzące z czujników w domu np. pomiar temperatury w kuchni. \\
-Aplikacja posiada 2 strony.
+Projekt jest napisany w języku javascript ES6+ więc podczas rozwijania aplikacji internetowej posiłkujemy sie transpilerem który konwertuje kod na starsze wersje javascript które są wspierane przez przeglądarki. Z tego powodu gdy tworzymy wersję produkcyjną musimy zbudować aplikację mobilną, a następnie zaimportować do serwera. Ten aspekt będzie dalej opisywany w części serwerowej.
+\par Istotnym aspektem aplikacji jest komunikacja z serwerem. jest ona nawiązywana na 2 etapowo.
+Serwer ma wyprowadzony endpoint z którym łączy się strona celem otrzymania portu na którym działa websocket \ref{lst:websocketGet}. W trakcie kiedy jeszcze czekamy na otrzymania odpowiedzi od serwera, kolejkujemy akcje które powinny być wysłane przez websocket \ref{lst:websocketQueue}. Po otrzymaniu portu, łączymy websocket do określonego portu \ref{lst:websocketCreate}. 
+\par rozwiązanie to sprawia że w przypadku decyzji zmiany portów, ustawiamy je tylko na serwerze. Nie ma potrzeby edycji i budowania na nowo aplikacji webowej. Klasa obsługująca websocket została pokazana w listingu \ref{lst:websocket}
+\newpage
+\begin{lstlisting}[columns=fullflexible,caption={websocket.ts}\label{lst:websocket},language=Java]
+import axios from 'axios'
+class ReconnectingWebSocket {
+    private connection: null | WebSocket = null;
+    private onmessageHandler: any;
+    private sendQueue: any = [];
+    constructor() {
+        axios.get(`http://${window.location.hostname}:8080/websocket_port`)
+        .then(result => { /*!\annotation{lst:websocketGet}!*/
+            this.connection = new WebSocket(
+            'ws:' + window.location.hostname + `:${result.data.port}`) /*!\annotation{lst:websocketCreate}!*/
+            this.connection.onmessage = this.onmessageHandler;
+            this.connection.onerror = (err: any) => console.error(err)
+            this.connection.onopen = (resultws: any) => {
+                this.sendQueue.forEach(
+                    (data: any) => this.connection && this.connection.send(data));
+            }
+        }).catch((err) => {
+            console.error(err)
+        })
+    };
+    set onmessage(handler: any) {
+        if (this.connection) {
+            this.connection.onmessage = handler;
+        } else {
+            this.onmessageHandler = handler;
+        }
+    }
+    public send(data: any) {
+        if (this.connection !== null && this.connection.readyState === WebSocket.OPEN) {
+            this.connection.send(data)
+        } else {
+            this.sendQueue.push(data); /*!\annotation{lst:websocketQueue}!*/
+        }
+    }
+}
+const ws = new ReconnectingWebSocket();
+export default ws
+\end{lstlisting}
+\par Aplikacja posiada 2 strony czyli Dashboard i Settings.
 \subsection{Dashboard}
 Widzimy tutaj wszystkie zapisane urządzenia w postaci kafelek. Wyświetlane są tylko najważniejsze informacje czyli typ urządzenia(Przycisk, czujnik itp.), nazwa i stan. W przypadku przycisku mamy także możliwość klikania. 
 \subsection{Settings}

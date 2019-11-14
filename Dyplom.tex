@@ -50,6 +50,12 @@
 %Wcześniej był problem z polskimi znakami w otoczeniu lstlisting, stąd pozostawiono w komentarzu zastosowane wtedy rozwiązanie: 
 \lstset{literate=%-
 {ą}{{\k{a}}}1 {ć}{{\'c}}1 {ę}{{\k{e}}}1 {ł}{{\l{}}}1 {ń}{{\'n}}1 {ó}{{\'o}}1 {ś}{{\'s}}1 {ż}{{\.z}}1 {ź}{{\'z}}1 {Ą}{{\k{A}}}1 {Ć}{{\'C}}1 {Ę}{{\k{E}}}1 {Ł}{{\L{}}}1 {Ń}{{\'N}}1 {Ó}{{\'O}}1 {Ś}{{\'S}}1 {Ż}{{\.Z}}1 {Ź}{{\'Z}}1 }%{\ \ }{{\ }}1}
+\usepackage{pifont}
+\lstset{escapeinside={/*!}{!*/}}
+\newcounter{lstannotation}
+\setcounter{lstannotation}{0}
+\renewcommand{\thelstannotation}{\ding{\number\numexpr181+\arabic{lstannotation}}}
+\newcommand{\annotation}[1]{\refstepcounter{lstannotation}\label{#1}\thelstannotation}
 
 % Choć możliwe jest zastosowanie różnych pakietów formatujących tabele, zaleca się tego nie robić.
 %\usepackage{longtable}
@@ -562,7 +568,7 @@ SPECJALNOŚĆ: & \@specjalnosc\\
 
 \chapterstyle{noNumbered}
 \phantomsection % sets an anchor
-\addcontentsline{toc}{chapter}{Indeks rzeczowy}
+% \addcontentsline{toc}{chapter}{Indeks rzeczowy}
 \printindex
 
 \end{document}
