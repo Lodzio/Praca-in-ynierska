@@ -10,4 +10,42 @@ Oczywiście to urządzenie ma dwie spore wady.
     \item Mała stabilność, która jest efektem tego, że system działa na karcie SD.
     \item Do tego urządzenia musimy sami dostarczyć zasilanie 5V o minimalnym natężeniu 2A. Często z winy słabej jakości kabla albo zasilacza awaryjność powoduje, że musimy restartować urządzenie raz na miesiąc czy nawet na tydzień.
 \end{itemize}
-Wady i zalety pokazują, że jest to świetna konfiguracja prototypownia, lecz nie do długoterminowej instalacji.
+Warto jednak tutaj wspomnieć jednak że użytkownicy raspberry instalują system na dysku ssd co znacznie wydłuża żywotność i przy lekkich platformach system potrafi pracować wiele lat bez przerwy spowodowanej awarią. Eliminuje to nam pierwszą wadę urządzenia lecz można się z tym raczej spotkać tylko w hobbistycznych projektach, a nie w komercyjnych rozwiązaniach.
+\par
+Wady i zalety pokazują, że jest to świetna konfiguracja prototypownia, a nie do długoterminowej instalacji. Jako że grupa docelowa tej platformy głównie korzysta z tego urządzenia to postanowiłem na nim stworzyć przykładową implementację.
+\newpage
+\section{Shelly}
+Najbardziej kosztownym czasowo punktem było zintegrowanie platformy ze sterownikiem Shelly1 który może być sterowany przez protokół mqtt. 
+\begin{figure}[h]
+  \includegraphics[width=\linewidth]{shelly1.jpg}
+  \caption{Shelly1}
+  \label{fig:shelly}
+\end{figure}
+API jest udostępnione na stronie producenta i praca polegała na zintegrowaniu sterownika z serwerem.
+API dla sterownika Shelly1 wygląda następująco:
+\begin{itemize}
+    \item shellies/<model>-<deviceid>/relay/0 by zareportować \textit{on} lub \textit{off}
+    \item shellies/<model>-<deviceid>/relay/0/command akceptuje \textit{on} lub \textit{off}
+    \item shellies/<model>-<deviceid>/input/0 reportuje stan wejścia SW
+    \item shellies/<model>-<deviceid>/longpush/0 reportuje stan długiego wciśnięcia jako 0 lub 1
+\end{itemize}
+dochodzi jeszcze jeden ogólny kanał dla każdego modelu \textit{shellies/announce} na którym "przedstawia się" każdy nowo podłączony sterownik.
+\begin{lstlisting}[columns=fullflexible,caption={sterowanie shelly}\label{lst:shelly},language=Java]
+export const setRelay = (id, state) => {
+	client.publish(`shellies/${id}/relay/0/command`, state);
+};
+
+
+client.on('message', (topic, message) => {
+	if (topic === 'shellies/announce') {
+		const announcement = JSON.parse(message.toString());
+		console.log('new shelly: ', announcement.id);
+		shellies[announcement.id] = { ip: announcement.ip };
+	} else {
+		const id = topic.split('/')[1];
+		const prop = topic.split('/')[2];
+		messageHandler(id, prop, message.toString());
+	}
+});
+\end{lstlisting}
+\section{DS18B20}
