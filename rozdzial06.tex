@@ -30,12 +30,21 @@ API dla sterownika Shelly1 wygląda następująco:
     \item shellies/<model>-<deviceid>/longpush/0 reportuje stan długiego wciśnięcia jako 0 lub 1
 \end{itemize}
 dochodzi jeszcze jeden ogólny kanał dla każdego modelu \textit{shellies/announce} na którym "przedstawia się" każdy nowo podłączony sterownik.
+\newpage
 \begin{lstlisting}[columns=fullflexible,caption={sterowanie shelly}\label{lst:shelly},language=Java]
+const shellies = {};
 export const setRelay = (id, state) => {
 	client.publish(`shellies/${id}/relay/0/command`, state);
 };
-
-
+const messageHandler = (deviceId, prop, message) => {
+	if (shellies[deviceId] !== undefined) {
+		shellies[deviceId][prop] = message;
+		onDeviceChange({
+			id: deviceId,
+			...shellies[deviceId]
+		});
+	}
+};
 client.on('message', (topic, message) => {
 	if (topic === 'shellies/announce') {
 		const announcement = JSON.parse(message.toString());
@@ -49,3 +58,33 @@ client.on('message', (topic, message) => {
 });
 \end{lstlisting}
 \section{DS18B20}
+DS18B20 to termomentr cyfrowy obsługiwany przez protokół 1-wire. W przedstawionej implementacji jest on podłączony w trybie \textit{paraside} na 2 żyły gdzie jedna to masa, a druga jest jednocześnie zasilaniem jak i linią danych. 
+\par Implementacja jest znacznie łatwiejsza niż w przypadku Shelly ponieważ ogranicza sie do pobrania modułu \textit{ds18b20-raspi} i skonfigurowania wyjść raspberry. Możemy czytać wartość pomiaru przy użyciu jeden funkcji w 2 wariantach: synchronicznej \ref{lst:ds18b20sync} i asynchronicznej \ref{lst:ds18b20async}. Moduł exportuje funkcję \textit{readDataWithInterval} który odczytuje wartość co 30 sekund. Ogranicza to implementację w module głównym.
+\newpage
+\begin{lstlisting}[columns=fullflexible,caption={ds18b20.js}\label{lst:ds18b20},language=Java]
+import sensor from 'ds18b20-raspi'
+const intervalsId = [];
+
+export const readTemp = (id) => {
+    return new Promise((resolve, reject) => {
+        sensor.readC(id, 2, (err, temp) => { /*!\annotation{lst:ds18b20async}!*/
+            if (err) {
+                reject(err)
+            } else {
+                resolve(temp);
+            }
+        })
+    })
+}
+
+export const readDataWithInterval = (id, callback) => {
+    intervalsId.push(setInterval(() => {
+        const temp = sensor.readC(id) /*!\annotation{lst:ds18b20sync}!*/
+        callback(temp, id);
+    }, 30000))
+}
+
+export const clearAllTasks = () => {
+    intervalsId.forEach(intervalId => clearInterval(intervalId))
+}
+\end{lstlisting}

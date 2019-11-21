@@ -1,5 +1,5 @@
 \chapter{Dokumentacja techniczna}% 
-Projekt jest podzielony na 2 części: aplikacje internetową i serwer
+Projekt jest podzielony na 2 części: aplikacje internetową i serwer.
 \section{Aplikacja internetowa}
 Przy pomocy strony użytkownik monitoruje i steruje wszystkimi podłączonymi urządzeniami w budynku. Może także zobaczyć informacje pochodzące z czujników w domu np. pomiar temperatury w kuchni. \\
 Projekt jest napisany w języku javascript ES6+ więc podczas rozwijania aplikacji internetowej posiłkujemy sie transpilerem który konwertuje kod na starsze wersje javascript które są wspierane przez przeglądarki. Z tego powodu gdy tworzymy wersję produkcyjną musimy zbudować aplikację mobilną, a następnie zaimportować do serwera. Ten aspekt będzie dalej opisywany w części serwerowej.
@@ -108,7 +108,8 @@ export const updateDevice = (device) => { /*!\annotation{lst:updateDeviceParamet
 Charakter działania wygląda podobnie przy reszcie funkcji z tego modułu dzięki czemu użytkownik tego modułu nie potrzebuje wiedzy o strukturze bazy danych w celu korzystania z niej. 
 
 \subsection{MQTT}
-Serwer posiada obsługę MQTT w celu komunikacji z urządzeniami automatyki. W ramach projektu zintegrowany został sterownik przekaźnikowy Shelly który jest sterowany właśnie dzięki temu protokołowi. Moduł ten został napisany w osobnym pliku, a program mossquitto pełni funkcję brokera. 
+Serwer posiada obsługę MQTT w celu komunikacji z urządzeniami automatyki. W ramach projektu zintegrowany został sterownik przekaźnikowy Shelly który jest sterowany właśnie dzięki temu protokołowi. Moduł ten został napisany w osobnym pliku, a program mossquitto pełni funkcję brokera.
+\par Listing \ref{lst:initMQTT} pokazuje jedyny spójny element dla każdego modułu wykorzystujący MQTT. W rozdziale 6 został opisana implementacja API w projekcie.
 
 \begin{lstlisting}[columns=fullflexible,caption={inicializacja modułu mqtt}\label{lst:initMQTT},language=Java]
 try {
