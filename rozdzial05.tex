@@ -1,5 +1,5 @@
 \chapter{Dokumentacja techniczna}% 
-Projekt jest podzielony na 2 części: aplikacje internetową i serwer.
+Z racji tego że platforma ma obsługiwać zarówno wysokopoziomowe funkcje jak i niskopoziomowe jak GPIO w urządzeniu to projekt został podzielony na 2 części czyli część serwerową i stronę internetową. W tym rozdziale zostały opisane tylko istotne  części projektu które rozwiązują istotne problemy lub prezentują organizację kodu. Cały projekt został napisany wedłóg zasad opisanych w książce Clean Code gdzie jednym z ważniejszych zasad jest brak komentowania kodu. Kod sam siebie powinien opisywać za pomocą swojego nazewnictwa i struktury.  
 \section{Aplikacja internetowa}
 Przy pomocy strony użytkownik monitoruje i steruje wszystkimi podłączonymi urządzeniami w budynku. Może także zobaczyć informacje pochodzące z czujników w domu np. pomiar temperatury w kuchni. \\
 Projekt jest napisany w języku javascript ES6+ więc podczas rozwijania aplikacji internetowej posiłkujemy sie transpilerem który konwertuje kod na starsze wersje javascript które są wspierane przez przeglądarki. Z tego powodu gdy tworzymy wersję produkcyjną musimy zbudować aplikację mobilną, a następnie zaimportować do serwera. Ten aspekt będzie dalej opisywany w części serwerowej.
@@ -46,7 +46,8 @@ class ReconnectingWebSocket {
 const ws = new ReconnectingWebSocket();
 export default ws
 \end{lstlisting} \newpage
-\par Aplikacja posiada 2 strony czyli Dashboard i Settings.
+\par Cała aplikacja została napisana według wzorców opisywanych na głównej stronie React'a i oprócz opisywanego kodu \ref{lst:websocket} nie odchodzi od standardów pracy w tym środowisku. \\
+Aplikacja posiada tylko 2 strony które są potrzebne do minimalnego funkcjonowania czyli Dashboard i Settings.
 \subsection{Dashboard}
 Widzimy tutaj wszystkie zapisane urządzenia w postaci kafelek. Wyświetlane są tylko najważniejsze informacje czyli typ urządzenia(Przycisk, czujnik itp.), nazwa i stan. W przypadku przycisku mamy także możliwość klikania. 
 \begin{figure}[h]

@@ -59,7 +59,9 @@ client.on('message', (topic, message) => {
 \end{lstlisting}
 \section{DS18B20}
 DS18B20 to termomentr cyfrowy obsługiwany przez protokół 1-wire. W przedstawionej implementacji jest on podłączony w trybie \textit{paraside} na 2 żyły gdzie jedna to masa, a druga jest jednocześnie zasilaniem jak i linią danych. 
-\par Implementacja jest znacznie łatwiejsza niż w przypadku Shelly ponieważ ogranicza sie do pobrania modułu \textit{ds18b20-raspi} i skonfigurowania wyjść raspberry. Możemy czytać wartość pomiaru przy użyciu jeden funkcji w 2 wariantach: synchronicznej \ref{lst:ds18b20sync} i asynchronicznej \ref{lst:ds18b20async}. Moduł exportuje funkcję \textit{readDataWithInterval} który odczytuje wartość co 30 sekund. Ogranicza to implementację w module głównym.
+\par Implementacja jest znacznie łatwiejsza niż w przypadku Shelly ponieważ ogranicza sie do pobrania modułu \textit{ds18b20-raspi} i skonfigurowania wyjść raspberry. \\
+Konfiguracja ogranicza się do włączeniu obsługi interface'u 1-wire w ustawieniach urządzenia. Czujnik został podłączony do domyślnego portu którym jest GPIO4. Efekt końcowy widać na zdjęciu \ref{fig:finalGPIOConnections}
+\par Możemy czytać wartość pomiaru przy użyciu jeden funkcji w 2 wariantach: synchronicznej \ref{lst:ds18b20sync} i asynchronicznej \ref{lst:ds18b20async}. Moduł exportuje funkcję \textit{readDataWithInterval} który odczytuje wartość co 30 sekund. Ogranicza to implementację w module głównym.
 \newpage
 \begin{lstlisting}[columns=fullflexible,caption={ds18b20.js}\label{lst:ds18b20},language=Java]
 import sensor from 'ds18b20-raspi'
@@ -88,3 +90,8 @@ export const clearAllTasks = () => {
     intervalsId.forEach(intervalId => clearInterval(intervalId))
 }
 \end{lstlisting}
+\begin{figure}[h]
+  \includegraphics[width=\linewidth]{gpio.jpg}
+  \caption{podłączenie czujnika DS18B20}
+  \label{fig:finalGPIOConnections}
+\end{figure}
