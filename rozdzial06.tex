@@ -10,7 +10,7 @@ Oczywiście to urządzenie ma dwie spore wady.
     \item Mała stabilność, która jest efektem tego, że system działa na karcie SD.
     \item Do tego urządzenia musimy sami dostarczyć zasilanie 5V o minimalnym natężeniu 2A. Często z winy słabej jakości kabla albo zasilacza awaryjność powoduje, że musimy restartować urządzenie raz na miesiąc czy nawet na tydzień.
 \end{itemize}
-Warto jednak tutaj wspomnieć jednak że użytkownicy raspberry instalują system na dysku ssd co znacznie wydłuża żywotność i przy lekkich platformach system potrafi pracować wiele lat bez przerwy spowodowanej awarią. Eliminuje to nam pierwszą wadę urządzenia lecz można się z tym raczej spotkać tylko w hobbistycznych projektach, a nie w komercyjnych rozwiązaniach.
+Warto jednak tutaj wspomnieć jednak że niektórzy miłośnicy Raspberry instalują system na dysku ssd co znacznie wydłuża żywotność i przy lekkich platformach system potrafi pracować wiele lat bez przerwy spowodowanej awarią. Eliminuje to nam pierwszą wadę urządzenia lecz można się z tym raczej spotkać tylko w hobbistycznych projektach, a nie w komercyjnych rozwiązaniach.
 \par
 Wady i zalety pokazują, że jest to świetna konfiguracja prototypownia, a nie do długoterminowej instalacji. Jako że grupa docelowa tej platformy głównie korzysta z tego urządzenia to postanowiłem na nim stworzyć przykładową implementację.
 \newpage
@@ -59,9 +59,9 @@ client.on('message', (topic, message) => {
 \end{lstlisting}
 \section{DS18B20}
 DS18B20 to termomentr cyfrowy obsługiwany przez protokół 1-wire. W przedstawionej implementacji jest on podłączony w trybie \textit{paraside} na 2 żyły gdzie jedna to masa, a druga jest jednocześnie zasilaniem jak i linią danych. 
-\par Implementacja jest znacznie łatwiejsza niż w przypadku Shelly ponieważ ogranicza sie do pobrania modułu \textit{ds18b20-raspi} i skonfigurowania wyjść raspberry. \\
+\par Implementacja jest znacznie łatwiejsza niż w przypadku Shelly ponieważ ogranicza sie do pobrania modułu \textit{ds18b20-raspi} z repozytorium npm i skonfigurowania wyjść raspberry. \\
 Konfiguracja ogranicza się do włączeniu obsługi interface'u 1-wire w ustawieniach urządzenia. Czujnik został podłączony do domyślnego portu którym jest GPIO4. Efekt końcowy widać na zdjęciu \ref{fig:finalGPIOConnections}
-\par Możemy czytać wartość pomiaru przy użyciu jeden funkcji w 2 wariantach: synchronicznej \ref{lst:ds18b20sync} i asynchronicznej \ref{lst:ds18b20async}. Moduł exportuje funkcję \textit{readDataWithInterval} który odczytuje wartość co 30 sekund. Ogranicza to implementację w module głównym.
+\par Możemy czytać wartość pomiaru przy użyciu jednej funkcji w 2 wariantach: synchronicznej \ref{lst:ds18b20sync} i asynchronicznej \ref{lst:ds18b20async}. Moduł exportuje funkcję \textit{readDataWithInterval} który odczytuje wartość co 30 sekund. Skraca to implementację w module głównym.
 \newpage
 \begin{lstlisting}[columns=fullflexible,caption={ds18b20.js}\label{lst:ds18b20},language=Java]
 import sensor from 'ds18b20-raspi'
