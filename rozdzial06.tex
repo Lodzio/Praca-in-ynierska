@@ -15,16 +15,17 @@ Warto jednak tutaj wspomnieć jednak że niektórzy miłośnicy Raspberry instal
 Wady i zalety pokazują, że jest to świetna konfiguracja prototypownia, a nie do długoterminowej instalacji. Jako że grupa docelowa tej platformy głównie korzysta z tego urządzenia to postanowiłem na nim stworzyć przykładową implementację.
 \newpage
 \section{Shelly}
-Najbardziej kosztownym czasowo punktem było zintegrowanie platformy ze sterownikiem Shelly1 który może być sterowany przez protokół mqtt. 
+Najbardziej kosztownym czasowo punktem było zintegrowanie platformy ze sterownikiem Shelly1 który może być sterowany przez protokół mqtt. \cite{mqtt, shelly}
 \begin{figure}[h]
-  \includegraphics[width=\linewidth]{shelly1.jpg}
+  \centering
+  \includegraphics[width=\linewidth/2]{shelly1.jpg}
   \caption{Shelly1}
   \label{fig:shelly}
 \end{figure}
 API jest udostępnione na stronie producenta i praca polegała na zintegrowaniu sterownika z serwerem.
 API dla sterownika Shelly1 wygląda następująco:
 \begin{itemize}
-    \item shellies/<model>-<deviceid>/relay/0 by zareportować \textit{on} lub \textit{off}
+    \item shellies/<model>-<deviceid>/relay/0 by zaraportować \textit{on} lub \textit{off}
     \item shellies/<model>-<deviceid>/relay/0/command akceptuje \textit{on} lub \textit{off}
     \item shellies/<model>-<deviceid>/input/0 reportuje stan wejścia SW
     \item shellies/<model>-<deviceid>/longpush/0 reportuje stan długiego wciśnięcia jako 0 lub 1
@@ -58,9 +59,9 @@ client.on('message', (topic, message) => {
 });
 \end{lstlisting}
 \section{DS18B20}
-DS18B20 to termomentr cyfrowy obsługiwany przez protokół 1-wire. W przedstawionej implementacji jest on podłączony w trybie \textit{paraside} na 2 żyły gdzie jedna to masa, a druga jest jednocześnie zasilaniem jak i linią danych. 
-\par Implementacja jest znacznie łatwiejsza niż w przypadku Shelly ponieważ ogranicza sie do pobrania modułu \textit{ds18b20-raspi} z repozytorium npm i skonfigurowania wyjść raspberry. \\
-Konfiguracja ogranicza się do włączeniu obsługi interface'u 1-wire w ustawieniach urządzenia. Czujnik został podłączony do domyślnego portu którym jest GPIO4. Efekt końcowy widać na zdjęciu \ref{fig:finalGPIOConnections}
+DS18B20 to termometr cyfrowy obsługiwany przez protokół 1-wire. W przedstawionej implementacji jest on podłączony w trybie \textit{paraside} na 2 żyły gdzie jedna to masa, a druga jest jednocześnie zasilaniem jak i linią danych. 
+\par Implementacja jest znacznie łatwiejsza niż w przypadku Shelly ponieważ ogranicza się do pobrania modułu \textit{ds18b20-raspi} z repozytorium npm i skonfigurowania wyjść raspberry. \\
+Konfiguracja ogranicza się do włączeniu obsługi interface'u 1-wire w ustawieniach urządzenia. Czujnik został podłączony do domyślnego portu którym jest GPIO4. Efekt końcowy widać na zdjęciu \ref{fig:finalGPIOConnections} \cite{linux}
 \par Możemy czytać wartość pomiaru przy użyciu jednej funkcji w 2 wariantach: synchronicznej \ref{lst:ds18b20sync} i asynchronicznej \ref{lst:ds18b20async}. Moduł exportuje funkcję \textit{readDataWithInterval} który odczytuje wartość co 30 sekund. Skraca to implementację w module głównym.
 \newpage
 \begin{lstlisting}[columns=fullflexible,caption={ds18b20.js}\label{lst:ds18b20},language=Java]

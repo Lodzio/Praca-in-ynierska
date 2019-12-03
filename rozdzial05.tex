@@ -1,10 +1,11 @@
 \chapter{Dokumentacja techniczna}% 
-Z racji tego że platforma ma obsługiwać zarówno wysokopoziomowe funkcje jak i niskopoziomowe jak GPIO w urządzeniu to projekt został podzielony na 2 części czyli część serwerową i stronę internetową. W tym rozdziale zostały opisane tylko istotne  części projektu które rozwiązują istotne problemy lub prezentują organizację kodu. Cały projekt został napisany wedłóg zasad opisanych w książce Clean Code gdzie jednym z ważniejszych zasad jest brak komentowania kodu. Kod sam siebie powinien opisywać za pomocą swojego nazewnictwa i struktury.  
+Z racji tego że platforma ma obsługiwać zarówno wysokopoziomowe funkcje jak i niskopoziomowe jak GPIO w urządzeniu to projekt został podzielony na 2 części czyli część serwerową i stronę internetową. W tym rozdziale zostały opisane tylko istotne  części projektu które rozwiązują istotne problemy lub prezentują organizację kodu. Cały projekt został napisany według zasad opisanych w książce Clean Code gdzie jednym z ważniejszych zasad jest brak komentowania kodu. Kod sam siebie powinien opisywać za pomocą swojego nazewnictwa i struktury.  \cite{cleancode}
 \section{Aplikacja internetowa}
 Przy pomocy strony użytkownik monitoruje i steruje wszystkimi podłączonymi urządzeniami w budynku. Może także zobaczyć informacje pochodzące z czujników w domu np. pomiar temperatury w kuchni. \\
-Projekt jest napisany w języku javascript ES6+ więc podczas rozwijania aplikacji internetowej posiłkujemy sie transpilerem który konwertuje kod na starsze wersje javascript które są wspierane przez przeglądarki. Z tego powodu gdy tworzymy wersję produkcyjną musimy zbudować stronę, a następnie zaimportować do serwera. Ten aspekt będzie dalej opisywany w części serwerowej.
+Projekt jest napisany w języku javascript ES6+ więc podczas rozwijania aplikacji internetowej posiłkujemy się transpilerem który konwertuje kod na starsze wersje javascript które są wspierane przez przeglądarki. Z tego powodu gdy tworzymy wersję produkcyjną musimy zbudować stronę, a następnie zaimportować do serwera. Ten aspekt będzie dalej opisywany w części serwerowej.
 \par Istotnym aspektem aplikacji jest komunikacja z serwerem. jest ona nawiązywana na 2 etapowo.
-Serwer ma wyprowadzony endpoint z którym łączy się strona celem otrzymania portu na którym działa websocket \ref{lst:websocketGet}. W trakcie kiedy jeszcze czekamy na otrzymania odpowiedzi od serwera, kolejkujemy akcje które powinny być wysłane przez websocket \ref{lst:websocketQueue}. Po otrzymaniu portu, łączymy websocket do określonego portu \ref{lst:websocketCreate}. 
+Serwer ma wyprowadzony endpoint z którym łączy się strona celem otrzymania portu na którym działa websocket
+\ref{lst:websocketGet}. W trakcie kiedy jeszcze czekamy na otrzymania odpowiedzi od serwera, kolejkujemy akcje które powinny być wysłane przez websocket \ref{lst:websocketQueue}. Po otrzymaniu portu, łączymy websocket do określonego portu \ref{lst:websocketCreate}. 
 \par rozwiązanie to sprawia że w przypadku decyzji zmiany portów, ustawiamy je tylko na serwerze. Nie ma potrzeby edycji i budowania na nowo aplikacji webowej. Klasa obsługująca websocket została pokazana w listingu \ref{lst:websocket}
 \newpage
 \begin{lstlisting}[columns=fullflexible,caption={websocket.ts}\label{lst:websocket},language=Java]
@@ -46,7 +47,7 @@ class ReconnectingWebSocket {
 const ws = new ReconnectingWebSocket();
 export default ws
 \end{lstlisting} \newpage
-\par Cała aplikacja została napisana według wzorców opisywanych na głównej stronie React'a i oprócz opisywanego kodu \ref{lst:websocket} nie odchodzi od standardów pracy w tym środowisku. \\
+\par Cała aplikacja została napisana według wzorców opisywanych na głównej stronie React'a i oprócz opisywanego kodu \ref{lst:websocket} nie odchodzi od standardów pracy w tym środowisku. \cite{React}\\
 Aplikacja posiada tylko 2 strony które są potrzebne do minimalnego funkcjonowania czyli Dashboard i Settings.
 \subsection{Dashboard}
 Widzimy tutaj wszystkie zapisane urządzenia w postaci kafelek. Wyświetlane są tylko najważniejsze informacje czyli typ urządzenia(Przycisk, czujnik itp.), nazwa i stan. W przypadku przycisku mamy także możliwość klikania. 
@@ -74,7 +75,7 @@ Serwer jest pośrednikiem między poleceniami użytkownika, a urządzeniami. Jed
 \end{itemize}
 Został on napisany w języku javascript i korzysta z transpilera babel-node w celu pracy w wersjach es6+. Serwer posiada dodatkowe testy które sprawdzają działanie niektórych komponentów.
 \subsection{HTTP}
-Serwer korzysta z obszernego framework'a Express dla języka javascript który pozwala zaimportować cały katalog zawierający stronę \ref{lst:connectPublicCat}. Zbudowana strona jest przechowywana w katalogu \textit{public}. \\
+Serwer korzysta z obszernego framework'a Express dla języka javascript który pozwala zaimportować cały katalog zawierający stronę \ref{lst:connectPublicCat}. Zbudowana strona jest przechowywana w katalogu \textit{public}. \cite{express}\\
 Oprócz tego obsługiwany jest wspominane już zapytanie o port na którym działa websocket \ref{lst:getWSPort}.
 Ten krótki kod w \ref{lst:http} pokazuje całą strukturę http w projekcie.
 \begin{lstlisting}[columns=fullflexible,caption={http.js}\label{lst:http},language=Java]
@@ -90,7 +91,7 @@ export const listen = config => {
 }
 \end{lstlisting}
 \subsection{Baza Danych}
-Jako że w założeniach projektu zostało postanowione że powinien on działać na wielu sprzętach to użyta została baza danych relacyjna na silniku SQLite. Sama baza nie jest rozbudowana i zawiera tylko 2 tabele czyli logi i urządzenia. Czas w logach jest typu int mimo że SQLite posiada typ danej timestamp. Powodem tej decyzji jest łatwiejsza integracja ze środowiskiem javascript. 
+Jako że w założeniach projektu zostało postanowione że powinien on działać na wielu sprzętach to użyta została baza danych relacyjna na silniku SQLite \cite{sqlite}. Sama baza nie jest rozbudowana i zawiera tylko 2 tabele czyli logi i urządzenia. Czas w logach jest typu int mimo że SQLite posiada typ danej timestamp. Powodem tej decyzji jest łatwiejsza integracja ze środowiskiem javascript. \cite{sqlitejs}
 \begin{figure}[h!]
   \includegraphics[width=\linewidth]{db.png}
   \caption{schemat bazy}
