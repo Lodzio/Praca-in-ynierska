@@ -1,11 +1,11 @@
 \chapter{Dokumentacja techniczna}% 
-Z racji tego, że platforma ma obsługiwać zarówno wysokopoziomowe funkcje jak i niskopoziomowe jak GPIO w urządzeniu, to projekt podzielono na 2 części - część serwerową i stronę internetową. W tym rozdziale zostały opisane tylko istotne  części projektu, które rozwiązują istotne problemy lub prezentują organizację kodu. Cały projekt został napisany według zasad opisanych w książce "Clean Code" gdzie jedną z ważniejszych zasad jest brak komentowania kodu. Kod sam siebie powinien opisywać za pomocą swojego nazewnictwa i struktury.  \cite{cleancode}
+Z racji tego, że platforma ma obsługiwać zarówno wysokopoziomowe funkcje jak i niskopoziomowe jak GPIO w urządzeniu, to projekt podzielono na 2 części - część serwerową i stronę internetową. W tym rozdziale zostały opisane tylko istotne  części projektu, które rozwiązują istotne problemy lub prezentują organizację kodu. Cały projekt został napisany według zasad opisanych w książce "Clean Code" \cite{cleancode} gdzie jedną z ważniejszych zasad jest brak komentowania kodu. Kod sam siebie powinien opisywać za pomocą swojego nazewnictwa i struktury. 
 \section{Aplikacja internetowa}
 Przy pomocy strony użytkownik monitoruje i steruje wszystkimi podłączonymi urządzeniami w budynku. Może także zobaczyć informacje pochodzące z czujników w domu np. pomiar temperatury w kuchni. \par
 Projekt został napisany w języku javascript ES6+, więc podczas rozwijania aplikacji internetowej posiłkowano się transpilerem. Konwertuje on kod na starsze wersje javascript, które są wspierane przez przeglądarki. Z tego powodu gdy tworzona jest  wersja produkcyjna należy zbudować stronę, a następnie zaimportować ją do serwera. Ten aspekt zostanie dalej opisywany w części serwerowej.
 \par Istotnym aspektem aplikacji jest komunikacja z serwerem. Jest ona nawiązywana dwuetapowo.
 Serwer ma wyprowadzony endpoint, z którym łączy się strona w celu otrzymania portu, na którym działa websocket
-\ref{lst:websocketGet}. W trakcie kiedy jeszcze oczekuje się na otrzymanie odpowiedzi od serwera, dodaje się do kolejki akcje, które powinny być wysłane przez websocket \ref{lst:websocketQueue}. Po otrzymaniu portu, łączy się websocket do określonego portu \ref{lst:websocketCreate}. 
+(listing \ref{lst:websocket} \ref{lst:websocketGet}). W trakcie kiedy jeszcze oczekuje się na otrzymanie odpowiedzi od serwera, dodaje się do kolejki akcje, które powinny być wysłane przez websocket (listing \ref{lst:websocket} \ref{lst:websocketQueue}). Po otrzymaniu portu, łączy się websocket do określonego portu (listing \ref{lst:websocket} \ref{lst:websocketCreate}). 
 \par Rozwiązanie to sprawia że w przypadku decyzji zmiany portów, ustawia się je tylko na serwerze. Nie ma potrzeby edycji i budowania na nowo aplikacji webowej. Klasa obsługująca websocket została pokazana w listingu \ref{lst:websocket}
 \newpage
 \begin{lstlisting}[columns=fullflexible,caption={websocket.ts}\label{lst:websocket},language=Java]
@@ -47,7 +47,7 @@ class ReconnectingWebSocket {
 const ws = new ReconnectingWebSocket();
 export default ws
 \end{lstlisting} \newpage
-\par Cała aplikacja została napisana według wzorców opisywanych na głównej stronie React'a. Oprócz opisywanego kodu \ref{lst:websocket} nie odchodzi ona od standardów pracy w tym środowisku. \cite{React}\\
+\par Cała aplikacja została napisana według wzorców opisywanych na głównej stronie React'a  \cite{React}. Oprócz opisywanego kodu w listingu \ref{lst:websocket} nie odchodzi ona od standardów pracy w tym środowisku.\\
 Aplikacja posiada tylko dwie strony, które są potrzebne do minimalnego funkcjonowania czyli Dashboard i Settings.
 \subsection{Dashboard}
 Na rys \ref{fig:dashboard} ukazano wszystkie zapisane urządzenia w postaci kafelek. Wyświetlane są tylko najważniejsze informacje czyli typ urządzenia(Przycisk, czujnik itp.), nazwa i stan. W przypadku przycisku istnieje także możliwość klikania. 
@@ -75,8 +75,8 @@ Serwer jest pośrednikiem między poleceniami użytkownika, a urządzeniami. Jed
 \end{itemize}
 Został on napisany w języku javascript. Korzysta on z transpilera babel-node w celu pracy w wersjach es6+. Serwer posiada dodatkowe testy, które sprawdzają działanie niektórych komponentów.
 \subsection{HTTP}
-Serwer korzysta z obszernego framework'a Express przeznaczonego dla języka javascript, który pozwala zaimportować cały katalog zawierający stronę \ref{lst:connectPublicCat}. Zbudowana strona jest przechowywana w katalogu \textit{public}. \cite{express}\\
-Oprócz tego obsługiwane jest wspominane już zapytanie o port, na którym działa websocket \ref{lst:getWSPort}.
+Serwer korzysta z obszernego framework'a Express \cite{express} przeznaczonego dla języka javascript, który pozwala zaimportować cały katalog zawierający stronę (listing \ref{lst:http} \ref{lst:connectPublicCat}). Zbudowana strona jest przechowywana w katalogu \textit{public}.\\
+Oprócz tego obsługiwane jest wspominane już zapytanie o port, na którym działa websocket (listing \ref{lst:websocket} \ref{lst:getWSPort}).
 Ten krótki kod w \ref{lst:http} pokazuje całą strukturę http w projekcie.
 \begin{lstlisting}[columns=fullflexible,caption={http.js}\label{lst:http},language=Java]
 export const listen = config => {
@@ -91,14 +91,14 @@ export const listen = config => {
 }
 \end{lstlisting}
 \subsection{Baza Danych}
-Jako, że w założeniach projektu zostało postanowione, że powinien on działać na wielu sprzętach, to użyta została relacyjna baza danych na silniku SQLite \cite{sqlite}. Sama baza nie jest rozbudowana i zawiera tylko dwie tabele czyli logi i urządzenia. Czas w logach jest typu int, mimo że SQLite posiada typ danej timestamp. Powodem tej decyzji jest łatwiejsza integracja ze środowiskiem javascript. \cite{sqlitejs}
+Jako, że w założeniach projektu zostało postanowione, że powinien on działać na wielu sprzętach, to użyta została relacyjna baza danych na silniku SQLite \cite{sqlite}. Sama baza nie jest rozbudowana i zawiera tylko dwie tabele czyli logi i urządzenia. Czas w logach jest typu int, mimo że SQLite posiada typ danej timestamp. Powodem tej decyzji jest łatwiejsza integracja ze środowiskiem javascript \cite{sqlitejs}.
 \begin{figure}[h!]
   \includegraphics[width=\linewidth]{db.png}
   \caption{schemat bazy}
   \label{fig:db}
 \end{figure}
 
-Obsługa bazy danych ma przewidziany osobny moduł w serwerze, który upraszcza wiele procesów. W listingu \ref{lst:updateDeviceSQL} została zaprezentowana funkcja do aktualizacji urządzeń w bazie. Posiada ona tylko jeden argument, którym jest urządzenie do zaktualizowania \ref{lst:updateDeviceParameter} Dzięki temu funkcja może być łatwo re-używalna w przypadku integracji nowych urządzeń i pisania do nich komponentów. Funkcja ta buduje komendę SQL \ref{lst:updateDeviceBuildCommand}, a następnie dodaje nowy log w przypadku gdy wartość urządzenia uległa zmianie \ref{lst:updateDeviceAddNewLog} (na przykład zmieniła się temperatura).
+Obsługa bazy danych ma przewidziany osobny moduł w serwerze, który upraszcza wiele procesów. W listingu \ref{lst:updateDeviceSQL} została zaprezentowana funkcja do aktualizacji urządzeń w bazie. Posiada ona tylko jeden argument, którym jest urządzenie do zaktualizowania (listing \ref{lst:updateDeviceSQL} \ref{lst:updateDeviceParameter}) Dzięki temu funkcja może być łatwo re-używalna w przypadku integracji nowych urządzeń i pisania do nich komponentów. Funkcja ta buduje komendę SQL (listing \ref{lst:updateDeviceSQL} \ref{lst:updateDeviceBuildCommand}), a następnie dodaje nowy log (listing \ref{lst:updateDeviceSQL} \ref{lst:updateDeviceAddNewLog})  w przypadku gdy wartość urządzenia uległa zmianie (na przykład zmieniła się temperatura).
 \newpage
 \begin{lstlisting}[columns=fullflexible,caption={edycja urządzenia}\label{lst:updateDeviceSQL},language=Java]
 export const updateDevice = (device) => { /*!\annotation{lst:updateDeviceParameter}!*/

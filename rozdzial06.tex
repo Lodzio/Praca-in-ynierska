@@ -16,7 +16,7 @@ Warto jednak tutaj wspomnieć, że niektórzy miłośnicy Raspberry instalują s
 Wady i zalety pokazują, że jest to świetna konfiguracja prototypownia, a nie do długoterminowej instalacji. Jako, że grupa docelowa tej platformy głównie korzysta z tego urządzenia to postanowiono na nim stworzyć przykładową implementację.
 \newpage
 \section{Shelly}
-Najbardziej kosztownym czasowo punktem było zintegrowanie platformy ze sterownikiem Shelly1, który może być sterowany przez protokół mqtt. \cite{mqtt, shelly}
+Najbardziej kosztownym czasowo punktem było zintegrowanie platformy ze sterownikiem Shelly1 \cite{shelly}, który może być sterowany przez protokół mqtt \cite{mqtt}. 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth/2]{shelly1.jpg}
@@ -62,8 +62,9 @@ client.on('message', (topic, message) => {
 \section{DS18B20}
 DS18B20 to termometr cyfrowy obsługiwany przez protokół 1-wire. W przedstawionej implementacji jest on podłączony w trybie \textit{paraside} na dwie żyły gdzie jedna to masa, a druga jest jednocześnie zasilaniem jak i linią danych. 
 \par Implementacja jest znacznie łatwiejsza niż w przypadku Shelly, ponieważ ogranicza się do pobrania modułu \textit{ds18b20-raspi} z repozytorium npm i skonfigurowania wyjść Raspberry. \par
-Konfiguracja ogranicza się do włączeniu obsługi interface'u 1-wire w ustawieniach urządzenia. Czujnik został podłączony do domyślnego portu, którym jest GPIO4. Efekt końcowy widać na zdjęciu \ref{fig:finalGPIOConnections} \cite{linux}
-\par Można odczytać wartość pomiaru przy użyciu jednej funkcji w 2 wariantach: synchronicznej \ref{lst:ds18b20sync} i asynchronicznej \ref{lst:ds18b20async}. Moduł exportuje funkcję \textit{readDataWithInterval}, która odczytuje wartość co 30 sekund. Skraca to implementację w module głównym.
+Konfiguracja ogranicza się do włączeniu obsługi interface'u 1-wire w ustawieniach urządzenia \cite{linux}. Czujnik został podłączony do domyślnego portu, którym jest GPIO4. Efekt końcowy widać na zdjęciu \ref{fig:finalGPIOConnections}
+\par Można odczytać wartość pomiaru przy użyciu jednej funkcji w 2 wariantach: synchronicznej
+(listing \ref{lst:ds18b20} \ref{lst:ds18b20sync}) i asynchronicznej (listing \ref{lst:ds18b20} \ref{lst:ds18b20async}). Moduł exportuje funkcję \textit{readDataWithInterval}, która odczytuje wartość co 30 sekund. Skraca to implementację w module głównym.
 \newpage
 \begin{lstlisting}[columns=fullflexible,caption={ds18b20.js}\label{lst:ds18b20},language=Java]
 import sensor from 'ds18b20-raspi'
